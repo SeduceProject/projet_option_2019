@@ -92,9 +92,6 @@ void setup() {
   sensor14OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.14", &sensor14, true);
   sensor15OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.15", &sensor15, true);
   sensor16OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.16", &sensor16, true);
-  
-
-  // snmpget -v 1 -c public 192.168.43.126 1.3.6.1.4.1.5.0
 
   // Start the DS18B20 sensor
   sensors.begin();
@@ -103,20 +100,7 @@ void setup() {
 
 void loop() {
   snmp.loop(); // must be called as often as possible
-  if (snmp.setOccurred) {
-    snmp.sortHandlers();
-    snmp.resetSetOccurred();
-  }
   updateTemperature();
-}
-
-void updateTemperature(){
-  sensors.requestTemperatures(); 
-  sensor1 = (int) sensors.getTempCByIndex(0);
-  
-  Serial.print("Temperature 1 : ");
-  Serial.print(sensor1);
-  Serial.println("ºC");
 
   int delay_get = 2000;  
   unsigned long start_pause_timestamp = millis();
@@ -127,4 +111,25 @@ void updateTemperature(){
     unsigned long pause = 10;
     delay(min(remaining_duration, pause));
   } 
+}
+
+void updateTemperature(){
+  sensors.requestTemperatures(); 
+  sensor1 = //sensors.getTempCByIndex(0)*10;
+  sensor2 = sensors.getTempCByIndex(1)*10;
+  sensor3 = sensors.getTempCByIndex(2)*10;
+  sensor4 = sensors.getTempCByIndex(3)*10;
+  sensor5 = sensors.getTempCByIndex(4)*10;
+  sensor6 = sensors.getTempCByIndex(5)*10;
+  sensor7 = sensors.getTempCByIndex(6)*10;
+  sensor8 = sensors.getTempCByIndex(7)*10;
+  sensor9 = sensors.getTempCByIndex(8)*10;
+  sensor10 = sensors.getTempCByIndex(8)*10;
+  sensor11 = sensors.getTempCByIndex(9)*10;
+  sensor12 = sensors.getTempCByIndex(10)*10;
+  sensor13 = sensors.getTempCByIndex(11)*10;
+  sensor13 = sensors.getTempCByIndex(12)*10;
+  sensor14 = sensors.getTempCByIndex(13)*10;
+  sensor15 = sensors.getTempCByIndex(14)*10;
+  sensor16 = sensors.getTempCByIndex(15)*10;
 }
