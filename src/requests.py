@@ -34,7 +34,7 @@ def test_temperatures():
     for s in sensors:
         print("Sensor", s," : ", get_temperature(s,ip), "°C")
     #print("Delay for ", nb_sensors, " sensors : ", round(time.time()-t0,2), "s")
-
+    
 
 if __name__ == "__main__":
     test_temperatures()

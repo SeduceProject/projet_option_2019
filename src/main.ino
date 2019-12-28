@@ -5,6 +5,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+
 // SNMP AGENT
 const char* ssid = "Xperia X";
 const char* password = "atlexp56";
@@ -17,9 +18,6 @@ OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 
 // SENSORS
-float temperature = 29.83;
-ValueCallback* temperatureOID;
-
 float sensor1 = 1;
 ValueCallback* sensor1OID;
 float sensor2 = 2;
@@ -54,6 +52,14 @@ float sensor16 = 16;
 ValueCallback* sensor16OID;
 
 
+// FIRMWARE UPDATE
+char* needUpdate = "-";
+ValueCallback* needUpdateOID;
+
+
+// ------------------------------------
+
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -70,11 +76,9 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  // give snmp a pointer to the UDP object
+  // Give SNMP a pointer to the UDP object
   snmp.setUDP(&udp);
   snmp.begin();
-
-  temperatureOID = snmp.addFloatHandler(".1.3.6.1.4.1.5.0", &temperature, true);
 
   sensor1OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.1", &sensor1, true);
   sensor2OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.2", &sensor2, true);
@@ -93,15 +97,28 @@ void setup() {
   sensor15OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.15", &sensor15, true);
   sensor16OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.16", &sensor16, true);
 
+  needUpdateOID = snmp.addStringHandler(".1.3.6.1.4.1.5.0", &needUpdate, true);
+
   // Start the DS18B20 sensor
   sensors.begin();
-
 }
+
 
 void loop() {
   snmp.loop(); // must be called as often as possible
+  if (snmp.setOccurred) {
+    snmp.sortHandlers();
+    snmp.resetSetOccurred();
+    if(strcmp(needUpdate,"update")==0){
+      updateFirmware();
+    }
+  }
   updateTemperature();
+  doPause();
+}
 
+
+void doPause(){
   int delay_get = 2000;  
   unsigned long start_pause_timestamp = millis();
   while(millis() < start_pause_timestamp + delay_get) {
@@ -113,9 +130,10 @@ void loop() {
   } 
 }
 
+
 void updateTemperature(){
   sensors.requestTemperatures(); 
-  sensor1 = //sensors.getTempCByIndex(0)*10;
+  sensor1 = sensors.getTempCByIndex(0)*10;
   sensor2 = sensors.getTempCByIndex(1)*10;
   sensor3 = sensors.getTempCByIndex(2)*10;
   sensor4 = sensors.getTempCByIndex(3)*10;
@@ -132,4 +150,10 @@ void updateTemperature(){
   sensor14 = sensors.getTempCByIndex(13)*10;
   sensor15 = sensors.getTempCByIndex(14)*10;
   sensor16 = sensors.getTempCByIndex(15)*10;
+}
+
+
+void updateFirmware(){
+  Serial.println("UPDATING FIRMWARE FUNCTION");
+  needUpdate = "-";
 }
