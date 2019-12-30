@@ -1,12 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <Arduino_SNMP.h>
-
+#include <ESP8266mDNS.h>
+#include <ArduinoOTA.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
 
-// SNMP AGENT
+// WIFI & SNMP AGENT
 const char* ssid = "Xperia X";
 const char* password = "atlexp56";
 WiFiUDP udp;
@@ -52,16 +53,12 @@ float sensor16 = 16;
 ValueCallback* sensor16OID;
 
 
-// FIRMWARE UPDATE
-char* needUpdate = "-";
-ValueCallback* needUpdateOID;
-
-
 // ------------------------------------
 
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("");
   WiFi.begin(ssid, password);
   Serial.println("");
 
@@ -97,24 +94,23 @@ void setup() {
   sensor15OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.15", &sensor15, true);
   sensor16OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.16", &sensor16, true);
 
-  needUpdateOID = snmp.addStringHandler(".1.3.6.1.4.1.5.0", &needUpdate, true);
-
-  // Start the DS18B20 sensor
+  // Start the DS18B20 sensors
   sensors.begin();
+
+  // Setup Over The Air Update
+  ArduinoOTA.setPort(8266);
+  ArduinoOTA.setHostname("esp8266-seduce1");
+  ArduinoOTA.setPassword("admin");
+  manageOTA();
+  ArduinoOTA.begin();
 }
 
 
 void loop() {
   snmp.loop(); // must be called as often as possible
-  if (snmp.setOccurred) {
-    snmp.sortHandlers();
-    snmp.resetSetOccurred();
-    if(strcmp(needUpdate,"update")==0){
-      updateFirmware();
-    }
-  }
   updateTemperature();
   doPause();
+  ArduinoOTA.handle();
 }
 
 
@@ -153,7 +149,36 @@ void updateTemperature(){
 }
 
 
-void updateFirmware(){
-  Serial.println("UPDATING FIRMWARE FUNCTION");
-  needUpdate = "-";
+void manageOTA(){
+  ArduinoOTA.onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH) {
+      type = "sketch";
+    } else { // U_SPIFFS
+      type = "filesystem";
+    }
+
+    // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+    Serial.println("Start updating " + type);
+  });
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nEnd");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) {
+      Serial.println("Auth Failed");
+    } else if (error == OTA_BEGIN_ERROR) {
+      Serial.println("Begin Failed");
+    } else if (error == OTA_CONNECT_ERROR) {
+      Serial.println("Connect Failed");
+    } else if (error == OTA_RECEIVE_ERROR) {
+      Serial.println("Receive Failed");
+    } else if (error == OTA_END_ERROR) {
+      Serial.println("End Failed");
+    }
+  });
 }
