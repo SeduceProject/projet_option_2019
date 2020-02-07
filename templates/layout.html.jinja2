@@ -6,10 +6,7 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}" type="text/css"/>
 
-    {% block header %}
-    {% endblock %}
 </head>
 
 <body>
@@ -32,6 +29,7 @@
 
 <main role="main" class="container">
     <div class="container">
+        <br/><br/><br/>
         {% block body %}
         {% endblock %}
     </div>
@@ -50,6 +48,11 @@
 <link rel="stylesheet" href="lib/codemirror.css">
 <script src="{{ url_for('static', filename='CodeMirror/mode/javascript/clike.js') }}"></script> -->
 
+{% if page == "editor" %}
 <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endif %}
+{% if page == "temperature" %}
+<script src="{{ url_for('static', filename='js/temperature.js') }}"></script>
+{% endif %}
 </body>
 </html>

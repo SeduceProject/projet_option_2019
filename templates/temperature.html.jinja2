@@ -3,7 +3,35 @@
 
 {% block body %}
 
-<h1 class="h3">Temperature</h1>
+<h2>Temperature</h2>
+<br/><br/>
+
+
+<div class="row">
+    <div class="col-6">
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <select class="form-control" id="sensorList">
+                {% for sensor in sensors %}
+                    <option>{{ sensor }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <select class="form-control" id="cardList">
+                {% for card in cards %}
+                    <option>{{ card }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<br><br>
+<p class="h1 text-center"><span id="temp">-</span> °C</p>
 
 
 {% endblock %}
