@@ -4,14 +4,10 @@
 {% block body %}
 <h2>Editor</h2>
 
-<div class="form-group">
-    <textarea class="form-control my-5" rows="15" id="templateInput">{{code}}</textarea>
-    <div class="text-center">
-    <button type="button" class="btn btn-primary" id="uploadBtn">Upload code</button>
-    </div>
-</div>
-
 <div class="container">
+  <div class="text-right">
+    <button type="button" class="btn btn-primary" id="uploadBtn">Upload code</button>
+  </div>
     <div class="alert alert-success alert-dismissible" id="successAlert">
         <strong>Success!</strong> Code has been uploaded.
     </div>
@@ -19,5 +15,27 @@
         <strong>Error!</strong>
     </div>
 </div>
+
+
+<div class="form-group">
+  
+    <textarea class="form-control my-5" rows="30" id="templateInput">{{code}}</textarea>
+    
+</div>
+
+
+
+<link rel="stylesheet" href="{{ url_for("static", filename="css/codemirror.css") }}">
+<script src="{{ url_for("static", filename="js/codemirror.js") }}"></script>
+<script src="{{ url_for("static", filename="js/clike.js") }}"></script>
+<script>
+  let myTextarea = $("#templateInput")[0];
+  var editor = CodeMirror.fromTextArea(myTextarea, {
+    lineNumbers: true,
+    matchBrackets: true,
+    mode: "text/x-c++src"
+  });
+  editor.setSize(1000, 500);
+</script>
 
 {% endblock %}

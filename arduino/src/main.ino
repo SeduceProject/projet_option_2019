@@ -8,8 +8,8 @@
 
 
 // WIFI & SNMP AGENT
-const char* ssid = "Xperia X";
-const char* password = "atlexp56";
+const char* ssid = "ssid";
+const char* password = "password";
 WiFiUDP udp;
 SNMPAgent snmp = SNMPAgent("public");
 
@@ -52,6 +52,13 @@ ValueCallback* sensor15OID;
 float sensor16 = 16;
 ValueCallback* sensor16OID;
 
+char* baseOid = ".1.3.6.1.4.1.5.";
+
+char* message = "Hello world v2";
+ValueCallback* messageOID;
+
+
+
 
 // ------------------------------------
 
@@ -77,22 +84,24 @@ void setup() {
   snmp.setUDP(&udp);
   snmp.begin();
 
-  sensor1OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.1", &sensor1, true);
-  sensor2OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.2", &sensor2, true);
-  sensor3OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.3", &sensor3, true);
-  sensor4OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.4", &sensor4, true);
-  sensor5OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.5", &sensor5, true);
-  sensor6OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.6", &sensor6, true);
-  sensor7OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.7", &sensor7, true);
-  sensor8OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.8", &sensor8, true);
-  sensor9OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.9", &sensor9, true);
-  sensor10OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.10", &sensor10, true);
-  sensor11OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.11", &sensor11, true);
-  sensor12OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.12", &sensor12, true);
-  sensor13OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.13", &sensor13, true);
-  sensor14OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.14", &sensor14, true);
-  sensor15OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.15", &sensor15, true);
-  sensor16OID = snmp.addFloatHandler(".1.3.6.1.4.1.5.16", &sensor16, true);
+  sensor1OID = snmp.addFloatHandler(strcat(baseOid,"1"), &sensor1, true);
+  sensor2OID = snmp.addFloatHandler(strcat(baseOid,"2"), &sensor2, true);
+  sensor3OID = snmp.addFloatHandler(strcat(baseOid,"3"), &sensor3, true);
+  sensor4OID = snmp.addFloatHandler(strcat(baseOid,"4"), &sensor4, true);
+  sensor5OID = snmp.addFloatHandler(strcat(baseOid,"5"), &sensor5, true);
+  sensor6OID = snmp.addFloatHandler(strcat(baseOid,"6"), &sensor6, true);
+  sensor7OID = snmp.addFloatHandler(strcat(baseOid,"7"), &sensor7, true);
+  sensor8OID = snmp.addFloatHandler(strcat(baseOid,"8"), &sensor8, true);
+  sensor9OID = snmp.addFloatHandler(strcat(baseOid,"9"), &sensor9, true);
+  sensor10OID = snmp.addFloatHandler(strcat(baseOid,"10"), &sensor10, true);
+  sensor11OID = snmp.addFloatHandler(strcat(baseOid,"11"), &sensor11, true);
+  sensor12OID = snmp.addFloatHandler(strcat(baseOid,"12"), &sensor12, true);
+  sensor13OID = snmp.addFloatHandler(strcat(baseOid,"13"), &sensor13, true);
+  sensor14OID = snmp.addFloatHandler(strcat(baseOid,"14"), &sensor14, true);
+  sensor15OID = snmp.addFloatHandler(strcat(baseOid,"15"), &sensor15, true);
+  sensor16OID = snmp.addFloatHandler(strcat(baseOid,"16"), &sensor16, true);
+
+  messageOID = snmp.addStringHandler(strcat(baseOid,"101"), &message, true);
 
   // Start the DS18B20 sensors
   sensors.begin();
@@ -129,9 +138,7 @@ void doPause(){
 
 void updateTemperature(){
   sensors.requestTemperatures(); 
-  
   sensor1 = sensors.getTempCByIndex(0)*10;
-  
   sensor2 = sensors.getTempCByIndex(1)*10;
   sensor3 = sensors.getTempCByIndex(2)*10;
   sensor4 = sensors.getTempCByIndex(3)*10;

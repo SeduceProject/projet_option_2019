@@ -16,7 +16,7 @@ def home():
 
 @app.route("/editor")
 def editor():
-    with open("./arduino/examples/test_template.ino") as f:
+    with open("./arduino/examples/demo.ino") as f:
         code = f.read()
     return render_template("editor.html.jinja2", code=code, page="editor")
 
@@ -53,10 +53,10 @@ def get_temperature():
     ips = get_ips('./ips.json')
     ip = ips[card]
     oid = '.1.3.6.1.4.1.5.'+sensor
-    temp = snmpget(ip, oid)
+    temp = round(float(snmpget(ip, oid)),1)
+    #if(type(temp)!=float):
+    #    temp = -127
     print(temp)
-    if(type(temp)!=int):
-        temp = -127
     return json.dumps({"temp": temp})
 
 # Other Functions
@@ -87,4 +87,4 @@ def snmpget(ip, oid):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

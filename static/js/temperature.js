@@ -30,7 +30,7 @@ function updateTemperature(){
         processData: false,
         success: function(result,status,xhr){
             let temp = result["temp"];
-            if(parseInt(temp) <= 127){
+            if(parseInt(temp) <= -127){
                 displayTemperature("-");}
             else{
                 displayTemperature(temp)}
@@ -44,5 +44,5 @@ function updateTemperature(){
 function displayTemperature(temp){
     console.log("temp = " +temp)
     $("#temp").text(temp);
-    setTimeout(updateTemperature, 3000)
+    setTimeout(updateTemperature, 1000)
 }

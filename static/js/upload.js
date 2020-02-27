@@ -18,7 +18,7 @@ function sendTemplate(){
         dataType: 'json',
         type: 'post',
         contentType: 'application/json',
-        data: JSON.stringify( { "template": $("#templateInput").val() } ),
+        data: JSON.stringify( { "template": editor.getValue() } ),
         processData: false,
         success: function(result,status,xhr){
             successCallback(result);
