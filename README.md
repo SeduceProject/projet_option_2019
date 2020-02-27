@@ -25,7 +25,7 @@ pip3 install -r REQUIREMENTS.txt
 
 ## Arduino structure
 
-To work on arduino, without the webbap, you need to move into the `arduino`é folder :
+To work on arduino, without the webbap, you need to move into the `arduino` folder :
 
 ```shell
 cd ./arduino
@@ -77,7 +77,7 @@ pio run --target upload --upload-port 192.168.0.46
 
 ### Testing the SNMP server
 
-To test the SNMP server, get your card's IP. You can then enter in a terminal window the following command:
+To test the SNMP server, get your card's IP (printed in the serial monitor or by listing the devices with platformio). You can then enter in a terminal window the following command:
 
 ```shell
 snmpget -v 1 -c public 192.168.0.46 1.3.6.1.4.1.5.1
@@ -105,5 +105,5 @@ You will find two pages :
 
 - Temperature : a live temperature monitoring
 
-- Editor : a [CodeMirror](https://codemirror.net/) editor, allowing to update to several arduino cards based on a [Jinja](https://jinja.palletsprojects.com/en/2.11.x/) template. In order to do so, you need ot set up the `ips.json` file by associating for each card an id with an IP adress.
+- Editor : a [CodeMirror](https://codemirror.net/) editor, allowing to update to several arduino cards based on a [Jinja](https://jinja.palletsprojects.com/en/2.11.x/) template. In order to do so, you need ot set up the `ips.json` file by associating for each card an ID with an IP adress.
 
